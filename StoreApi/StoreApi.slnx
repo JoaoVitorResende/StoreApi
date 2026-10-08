@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/StoreApi.Application/">
+    <Project Path="src/StoreApi.Application/StoreApi.Application/StoreApi.Application.csproj" Id="5239e4c9-1859-4e6d-b0d0-bbf30ef41688" />
+  </Folder>
+  <Folder Name="/src/StoreApi.Communication/">
+    <Project Path="src/StoreApi.Communication/StoreApi.Communication/StoreApi.Communication.csproj" Id="7c083f9c-3689-4c90-aa3a-22c29847e6d4" />
+  </Folder>
+  <Folder Name="/src/StoreApi.Domain/">
+    <Project Path="src/StoreApi.Domain/StoreApi.Domain/StoreApi.Domain.csproj" Id="904bafe8-5152-4e7d-9927-56b626d72644" />
+  </Folder>
+  <Folder Name="/src/StoreApi.Exception/">
+    <Project Path="src/StoreApi.Exception/StoreApi.Exception/StoreApi.Exception.csproj" Id="f586bfb7-aa05-4f1f-a19e-604a7f5e415e" />
+  </Folder>
+  <Folder Name="/src/StoreApi.Infrastructure/">
+    <Project Path="src/StoreApi.Infrastructure/StoreApi.Infrastructure/StoreApi.Infrastructure.csproj" Id="1ac7fd15-b255-496e-a0c9-d032c370bc28" />
+  </Folder>
+  <Folder Name="/src/StoreApi/">
+    <Project Path="src/StoreApi.Api/StoreApi.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>
