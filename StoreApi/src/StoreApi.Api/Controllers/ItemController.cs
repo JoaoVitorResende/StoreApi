@@ -14,7 +14,7 @@ namespace StoreApi.Api.Controllers
             var response = await useCase.Execute(request);
             return Created(string.Empty, response);
         }
-
+        /*
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetItemById([FromServices] IGetItemById useCase, [FromRoute] long id)
@@ -37,6 +37,6 @@ namespace StoreApi.Api.Controllers
         {
             await useCase.Execute(id, request);
             return NoContent();
-        }
+        }*/
     }
 }
