@@ -46,8 +46,7 @@ namespace StoreApi.Infrastructure
             }
 
             // Postgres (EF Core)
-            services.AddDbContext<StoreDbContext>(options => options.UseNpgsql(postgresConnection));
-
+            services.AddDbContext<StoreDbContext>(options => options.UseNpgsql(postgresConnection).UseSnakeCaseNamingConvention());
             // Mongo
             MongoMapping.Register();
             services.AddSingleton<IMongoClient>(new MongoClient(mongoConnection));
