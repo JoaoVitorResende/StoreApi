@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using StoreApi.Communication.Category.Request;
 using StoreApi.Communication.Category.Response;
 namespace StoreApi.Application.UseCases.Category.Register
 {
@@ -10,7 +11,7 @@ namespace StoreApi.Application.UseCases.Category.Register
             _autoMapper = autoMapper;
         }
 
-        public async Task<ResponseRegisterCategoryJson> Execute(RegisterCategoryUseCase req)
+        public async Task<ResponseRegisterCategoryJson> Execute(RequestCategoryJson req)
         {
             var entity = _autoMapper.Map<Domain.Entities.Category>(req);
 
