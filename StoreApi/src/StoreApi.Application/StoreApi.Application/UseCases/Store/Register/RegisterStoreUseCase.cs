@@ -3,6 +3,7 @@ using StoreApi.Communication.Store.Request;
 using StoreApi.Communication.Store.Response;
 using StoreApi.Domain.Repositories;
 using StoreApi.Domain.Repositories.Stores;
+using StoreApi.Exception.ExceptionBase;
 
 namespace StoreApi.Application.UseCases.Store.Register
 {

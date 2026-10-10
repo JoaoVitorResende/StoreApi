@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\StoreApi.Exception\StoreApi.Exception\StoreApi.Exception.csproj" />
+  </ItemGroup>
+
 </Project>

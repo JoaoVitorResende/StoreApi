@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StoreApi.Application\StoreApi.Application\StoreApi.Application.csproj" />
+    <ProjectReference Include="..\StoreApi.Exception\StoreApi.Exception\StoreApi.Exception.csproj" />
     <ProjectReference Include="..\StoreApi.Infrastructure\StoreApi.Infrastructure\StoreApi.Infrastructure.csproj" />
   </ItemGroup>
 

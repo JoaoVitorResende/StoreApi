@@ -1,8 +1,10 @@
-﻿namespace StoreApi.Domain.Repositories.Categories
+﻿using StoreApi.Domain.Entities;
+
+namespace StoreApi.Domain.Repositories.Categories
 {
     public interface ICategoryReadOnlyRepository
     {
-        Task<bool> ExistsById(long id);
-        Task<bool> ExistsByName(string normalizedName);
+        Task<Item> ExistsById(long id);
+        Task<Item> ExistsByName(string normalizedName);
     }
 }

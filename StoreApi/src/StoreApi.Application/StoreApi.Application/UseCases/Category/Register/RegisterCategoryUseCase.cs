@@ -3,6 +3,7 @@ using StoreApi.Communication.Category.Request;
 using StoreApi.Communication.Category.Response;
 using StoreApi.Domain.Repositories;
 using StoreApi.Domain.Repositories.Categories;
+using StoreApi.Exception.ExceptionBase;
 namespace StoreApi.Application.UseCases.Category.Register
 {
     public class RegisterCategoryUseCase : IRegisterCategoryUseCase
