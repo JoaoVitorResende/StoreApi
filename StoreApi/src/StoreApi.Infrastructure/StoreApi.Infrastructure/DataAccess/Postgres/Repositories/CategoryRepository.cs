@@ -18,18 +18,25 @@ namespace StoreApi.Infrastructure.DataAccess.Postgres.Repositories
             await _dbContext.Categories.AddAsync(category);
         }
 
-        public async Task<bool> ExistsById(long id)
+        public async Task<Category?> GetById(long id)
         {
             return await _dbContext.Categories
                 .AsNoTracking()
-                .AnyAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<bool> ExistsByName(string name)
+        public async Task<Category?> GetByName(string name)
         {
             return await _dbContext.Categories
                 .AsNoTracking()
-                .AnyAsync(c => c.Name == name);
+                .FirstOrDefaultAsync(c => c.Name == name);
+        }
+        public async Task<List<Category>> GetAll()
+        {
+            return await _dbContext.Categories
+                .AsNoTracking()
+                .OrderBy(c => c.Name)
+                .ToListAsync();
         }
     }
 }

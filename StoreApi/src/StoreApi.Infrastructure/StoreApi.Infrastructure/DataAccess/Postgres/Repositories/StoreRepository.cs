@@ -18,18 +18,18 @@ namespace StoreApi.Infrastructure.DataAccess.Postgres.Repositories
             await _dbContext.Stores.AddAsync(store);
         }
 
-        public async Task<bool> ExistsById(long id)
+        public async Task<Store?> GetById(long id)
         {
             return await _dbContext.Stores
                 .AsNoTracking()
-                .AnyAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task<bool> ExistsByName(string name)
+        public async Task<Store?> GetByName(string name)
         {
             return await _dbContext.Stores
                 .AsNoTracking()
-                .AnyAsync(s => s.Title == name);
+                .FirstOrDefaultAsync(s => s.Title == name);
         }
     }
 }

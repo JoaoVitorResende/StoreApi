@@ -2,7 +2,7 @@
 {
     public class ResponseRegisterItemJson
     {
-        public long Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
         public decimal Quantity { get; set; }

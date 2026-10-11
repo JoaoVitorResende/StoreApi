@@ -1,3 +1,4 @@
+using StoreApi.Api.Filters;
 using StoreApi.Application;
 using StoreApi.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddControllers(options => options.Filters.Add<ExceptionFilter>());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

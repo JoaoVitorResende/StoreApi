@@ -4,6 +4,6 @@ namespace StoreApi.Application.UseCases.Itens.GetByID
 {
     public interface IGetItemByID
     {
-        public Task<ResponseItens> Execute(long id);
+        public Task<ResponseItemJson> Execute(string id);
     }
 }

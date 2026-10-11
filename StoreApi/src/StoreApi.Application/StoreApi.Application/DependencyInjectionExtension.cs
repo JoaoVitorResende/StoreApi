@@ -1,7 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StoreApi.Application.AutoMapper;
+using StoreApi.Application.UseCases.Category.Get;
 using StoreApi.Application.UseCases.Category.Register;
+using StoreApi.Application.UseCases.Itens.GetAll;
+using StoreApi.Application.UseCases.Itens.GetByID;
 using StoreApi.Application.UseCases.Itens.Register;
+using StoreApi.Application.UseCases.Store.GetByName;
 using StoreApi.Application.UseCases.Store.Register;
 
 namespace StoreApi.Application
@@ -22,6 +26,10 @@ namespace StoreApi.Application
             services.AddScoped<IRegisterItemUseCase, RegisterItemUseCase>();
             services.AddScoped<IRegisterCategoryUseCase, RegisterCategoryUseCase>();
             services.AddScoped<IRegisterStoreUseCase, RegisterStoreUseCase>();
+            services.AddScoped<IGetAllItens, GetAllItens>();
+            services.AddScoped<IGetItemByID, GetItemByID>();
+            services.AddScoped<IGetCategories, GetCategories>();
+            services.AddScoped<IGetStoreByName, GetStoreByName>();
         }
     }
 }

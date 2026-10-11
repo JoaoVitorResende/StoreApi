@@ -25,8 +25,9 @@ namespace StoreApi.Application.AutoMapper
         private void EntityToResponse()
         {
             CreateMap<Item, ResponseRegisterItemJson>();
+            CreateMap<Item, ResponseItemJson>();
             CreateMap<Category, ResponseRegisterCategoryJson>();
-            CreateMap<Store, ResponseRegisterStoreJson>();
+            CreateMap<Store, ResponseStoreJson>();
         }
     }
 }

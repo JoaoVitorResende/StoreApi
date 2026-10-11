@@ -1,6 +1,6 @@
 ﻿namespace StoreApi.Communication.Store.Response
 {
-    public class ResponseRegisterStoreJson
+    public class ResponseStoreJson
     {
         public string Title { get; set; } = string.Empty;
     }

@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StoreApi.Application.UseCases.Itens.GetAll;
+using StoreApi.Application.UseCases.Itens.GetByID;
 using StoreApi.Application.UseCases.Itens.Register;
+using StoreApi.Communication.Erros;
 using StoreApi.Communication.Item.Request;
+using StoreApi.Communication.Item.Response;
 
 namespace StoreApi.Api.Controllers
 {
@@ -9,34 +13,31 @@ namespace StoreApi.Api.Controllers
     public class ItemController : ControllerBase
     {
         [HttpPost]
+        [ProducesResponseType(typeof(ResponseRegisterItemJson), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ResponsesErrorJson), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterItem([FromServices] IRegisterItemUseCase useCase, [FromBody] RequestItemJson request)
         {
             var response = await useCase.Execute(request);
             return Created(string.Empty, response);
         }
-        /*
+
+        [HttpGet]
+        [ProducesResponseType(typeof(ResponseItens), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllItens([FromServices] IGetAllItens useCase)
+        {
+            var response = await useCase.Execute();
+            return Ok(response);
+        }
+
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetItemById([FromServices] IGetItemById useCase, [FromRoute] long id)
+        [ProducesResponseType(typeof(ResponseItemJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponsesErrorJson), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetItemById(
+            [FromServices] IGetItemByID useCase, [FromRoute] string id)
         {
             var response = await useCase.Execute(id);
             return Ok(response);
         }
-
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IActionResult> DeleteItem([FromServices] IDeleteItemUsecase useCase, [FromRoute] long id)
-        {
-            await useCase.Execute(id);
-            return NoContent();
-        }
-
-        [HttpPut]
-        [Route("{id}")]
-        public async Task<IActionResult> UpdateItem([FromServices] IUpdateItemUseCase useCase, [FromRoute] long id, [FromBody] RequestExpensesJson request)
-        {
-            await useCase.Execute(id, request);
-            return NoContent();
-        }*/
     }
 }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using StoreApi.Communication.Category.Response;
 using StoreApi.Domain.Repositories.Categories;
-using StoreApi.Exception.ExceptionBase;
 
 namespace StoreApi.Application.UseCases.Category.Get
 {
@@ -14,22 +13,14 @@ namespace StoreApi.Application.UseCases.Category.Get
             _mapper = mapper;
             _repository = repository;
         }
-        public async Task<ReponseCategories> Execute(string name)
+        public async Task<ReponseCategories> Execute()
         {
-            Validate(name);
-            var result = await _repository.ExistsByName(name);
+            var result = await _repository.GetAll();
+
             return new ReponseCategories
             {
-                categories = _mapper.Map<List<string>>(result)
+                categories = result.Select(c => c.Name).ToList()
             };
-        }
-        private void Validate(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                var errorMessages = new List<string>() { "Nao pode ser nulo" };
-                throw new ErrorOnValidationException(errorMessages);
-            }
         }
     }
 }

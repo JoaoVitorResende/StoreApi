@@ -18,14 +18,14 @@ namespace StoreApi.Application.UseCases.Store.Register
             _repository = repository;
             _unitOfWork = unitOfWork;
         }
-        public async Task<ResponseRegisterStoreJson> Execute(RequestStoreJson req)
+        public async Task<ResponseStoreJson> Execute(RequestStoreJson req)
         {
             Validation(req);
             var entity = _autoMapper.Map<Domain.Entities.Store>(req);
             
             await _repository.Add(entity);
             await _unitOfWork.Commit();
-            return _autoMapper.Map<ResponseRegisterStoreJson>(entity);
+            return _autoMapper.Map<ResponseStoreJson>(entity);
         }
         private void Validation(RequestStoreJson req)
         {

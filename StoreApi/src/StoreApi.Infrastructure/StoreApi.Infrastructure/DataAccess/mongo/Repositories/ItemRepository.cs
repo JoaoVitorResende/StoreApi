@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using StoreApi.Domain.Entities;
 using StoreApi.Domain.Repositories.Items;
@@ -46,6 +47,13 @@ namespace StoreApi.Infrastructure.DataAccess.Mongo.Repositories
             return await _context.Items
                 .Find(i => i.Id == id)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Item>> GetAll()
+        {
+            return await _context.Items
+               .Find(_ => true)
+               .ToListAsync();
         }
     }
 }

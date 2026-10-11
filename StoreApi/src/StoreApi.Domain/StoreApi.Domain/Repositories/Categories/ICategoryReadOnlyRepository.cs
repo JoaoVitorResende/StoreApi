@@ -4,7 +4,8 @@ namespace StoreApi.Domain.Repositories.Categories
 {
     public interface ICategoryReadOnlyRepository
     {
-        Task<Item> ExistsById(long id);
-        Task<Item> ExistsByName(string normalizedName);
+        Task<Category?> GetById(long id);
+        Task<Category?> GetByName(string normalizedName);
+        Task<List<Category>> GetAll();
     }
 }

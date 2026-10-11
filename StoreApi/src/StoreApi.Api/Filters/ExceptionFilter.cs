@@ -24,15 +24,21 @@ namespace StoreApi.Api.Filters
             var storeApiException = (StoreApiException)context.Exception;
             var errorResponse = new ResponsesErrorJson(storeApiException.GetErros());
 
-            context.HttpContext.Response.StatusCode = storeApiException.StatusCode;
-            context.Result = new BadRequestObjectResult(errorResponse);
+            context.Result = new ObjectResult(errorResponse)
+            {
+                StatusCode = storeApiException.StatusCode
+            };
+            context.ExceptionHandled = true;
         }
 
         public void ThrowUnkowError(ExceptionContext context)
         {
             var errorResponse = new ResponsesErrorJson("Erro desconhecido");
-            context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            context.Result = new ObjectResult(errorResponse);
+            context.Result = new ObjectResult(errorResponse)
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+            context.ExceptionHandled = true;
         }
     }
 }

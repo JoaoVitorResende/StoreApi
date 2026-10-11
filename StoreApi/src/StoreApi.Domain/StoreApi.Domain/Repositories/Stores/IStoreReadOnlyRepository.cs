@@ -1,8 +1,10 @@
-﻿namespace StoreApi.Domain.Repositories.Stores
+﻿using StoreApi.Domain.Entities;
+
+namespace StoreApi.Domain.Repositories.Stores
 {
     public interface IStoreReadOnlyRepository
     {
-        Task<bool> ExistsById(long id);
-        Task<bool> ExistsByName(string normalizedName);
+        Task<Store?> GetById(long id);
+        Task<Store?> GetByName(string normalizedName);
     }
 }

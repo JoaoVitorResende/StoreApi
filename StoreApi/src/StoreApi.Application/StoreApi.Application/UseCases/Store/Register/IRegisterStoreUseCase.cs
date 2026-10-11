@@ -5,6 +5,6 @@ namespace StoreApi.Application.UseCases.Store.Register
 {
     public interface IRegisterStoreUseCase
     {
-        public Task<ResponseRegisterStoreJson> Execute(RequestStoreJson req);
+        public Task<ResponseStoreJson> Execute(RequestStoreJson req);
     }
 }
