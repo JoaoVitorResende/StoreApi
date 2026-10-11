@@ -4,7 +4,6 @@ using StoreApi.Application.UseCases.Category.Register;
 using StoreApi.Communication.Category.Request;
 using StoreApi.Communication.Category.Response;
 using StoreApi.Communication.Erros;
-using StoreApi.Communication.Store.Response;
 
 namespace StoreApi.Api.Controllers
 {

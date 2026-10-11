@@ -20,8 +20,7 @@ namespace StoreApi.Application.UseCases.Itens.Register
         {
             Validation(request);
             var entity = _autoMapper.Map<Item>(request);
-
-
+            await _repository.Add(entity);
             return _autoMapper.Map<ResponseRegisterItemJson>(entity);
         }
 
