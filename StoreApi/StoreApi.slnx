@@ -18,5 +18,7 @@
   <Folder Name="/src/StoreApi/">
     <Project Path="src/StoreApi.Api/StoreApi.Api.csproj" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="tests/StoreApi.Application.Tests/StoreApi.Application.Tests.csproj" Id="95c2199c-8a22-4f44-9f6c-cd1c6798313f" />
+  </Folder>
 </Solution>
