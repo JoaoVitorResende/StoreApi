@@ -49,11 +49,20 @@ namespace StoreApi.Infrastructure.DataAccess.Mongo.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<Item>> GetAll()
+        public async Task<PagedResult<Item>> GetAll(int page, int pageSize)
         {
-            return await _context.Items
-               .Find(_ => true)
-               .ToListAsync();
+            var filter = Builders<Item>.Filter.Empty;
+
+            var total = await _context.Items.CountDocumentsAsync(filter);
+
+            var items = await _context.Items
+                .Find(filter)
+                .SortBy(i => i.Id)
+                .Skip((page - 1) * pageSize)
+                .Limit(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Item> { Items = items, Total = total };
         }
     }
 }

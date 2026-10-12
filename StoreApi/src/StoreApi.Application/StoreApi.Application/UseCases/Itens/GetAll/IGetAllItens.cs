@@ -4,6 +4,6 @@ namespace StoreApi.Application.UseCases.Itens.GetAll
 {
     public interface IGetAllItens
     {
-        Task<ResponseItens> Execute();
+        Task<ResponseItens> Execute(int page, int pageSize);
     }
 }

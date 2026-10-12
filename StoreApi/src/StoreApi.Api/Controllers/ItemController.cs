@@ -23,9 +23,12 @@ namespace StoreApi.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(ResponseItens), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllItens([FromServices] IGetAllItens useCase)
+        public async Task<IActionResult> GetAllItens(
+        [FromServices] IGetAllItens useCase,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
         {
-            var response = await useCase.Execute();
+            var response = await useCase.Execute(page, pageSize);
             return Ok(response);
         }
 
