@@ -1,7 +1,7 @@
 ﻿using StoreApi.Application.UseCases.Category;
 using StoreApi.Communication.Category.Request;
 
-namespace StoreApi.Application.Tests
+namespace StoreApi.Application.Tests.Registro
 {
     public class RegisterCategoryUseCaseTests
     {

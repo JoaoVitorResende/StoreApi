@@ -1,7 +1,7 @@
 ﻿using StoreApi.Application.UseCases.Store;
 using StoreApi.Communication.Store.Request;
 
-namespace StoreApi.Application.Tests
+namespace StoreApi.Application.Tests.Registro
 {
     public class RegisterStoreUseCaseTests
     {
