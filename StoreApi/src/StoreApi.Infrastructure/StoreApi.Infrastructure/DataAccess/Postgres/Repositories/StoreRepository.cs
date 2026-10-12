@@ -31,5 +31,13 @@ namespace StoreApi.Infrastructure.DataAccess.Postgres.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Title == name);
         }
+
+        public async Task<List<Store>> GetAll()
+        {
+            return await _dbContext.Stores
+               .AsNoTracking()
+               .OrderBy(s => s.Title)
+               .ToListAsync();
+        }
     }
 }

@@ -5,6 +5,7 @@ using StoreApi.Application.UseCases.Category.Register;
 using StoreApi.Application.UseCases.Itens.GetAll;
 using StoreApi.Application.UseCases.Itens.GetByID;
 using StoreApi.Application.UseCases.Itens.Register;
+using StoreApi.Application.UseCases.Store.GetAll;
 using StoreApi.Application.UseCases.Store.GetByName;
 using StoreApi.Application.UseCases.Store.Register;
 
@@ -30,6 +31,7 @@ namespace StoreApi.Application
             services.AddScoped<IGetItemByID, GetItemByID>();
             services.AddScoped<IGetCategories, GetCategories>();
             services.AddScoped<IGetStoreByName, GetStoreByName>();
+            services.AddScoped<IGetStoreAll, GetStoreAll>();
         }
     }
 }

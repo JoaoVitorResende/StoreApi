@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StoreApi.Application.UseCases.Store.GetAll;
 using StoreApi.Application.UseCases.Store.GetByName;
 using StoreApi.Application.UseCases.Store.Register;
 using StoreApi.Communication.Erros;
@@ -32,6 +33,15 @@ namespace StoreApi.Api.Controllers
         [FromRoute] string storeName)
         {
             var response = await useCase.Execute(storeName);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(ResponseStoreJson), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll(
+        [FromServices] IGetStoreAll useCase)
+        {
+            var response = await useCase.Execute();
             return Ok(response);
         }
     }

@@ -6,5 +6,6 @@ namespace StoreApi.Domain.Repositories.Stores
     {
         Task<Store?> GetById(long id);
         Task<Store?> GetByName(string normalizedName);
+        Task<List<Store>> GetAll();
     }
 }
