@@ -16,10 +16,10 @@ namespace StoreApi.Application.UseCases.Itens.Register
             _autoMapper = autoMapper;
             _repository = repository;
         }
-        public async Task<ResponseRegisterItemJson> Execute(RequestItemJson request)
+        public async Task<ResponseRegisterItemJson> Execute(RequestItemJson req)
         {
-            Validation(request);
-            var entity = _autoMapper.Map<Item>(request);
+            Validation(req);
+            var entity = _autoMapper.Map<Item>(req);
             await _repository.Add(entity);
             return _autoMapper.Map<ResponseRegisterItemJson>(entity);
         }

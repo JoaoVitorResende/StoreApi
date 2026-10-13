@@ -7,7 +7,7 @@ namespace StoreApi.Application.UseCases.Category
     {
         public CategoryValidator()
         {
-            RuleFor(store => store.Name).NotEmpty().WithMessage("O nome não pode ser vazio");
+            RuleFor(cate => cate.Name).NotEmpty().WithMessage("O nome não pode ser vazio");
         }
     }
 }
