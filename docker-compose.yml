@@ -1,77 +1,56 @@
+# docker-compose.yml
 services:
-  api:
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER:-store}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD:?defina RABBIT_PASSWORD no .env}
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # painel: http://localhost:15672
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongodata:/data/db
+
+  storeapi:
     build:
-      context: .
-      dockerfile: StoreApi.Api/Dockerfile
-    container_name: store-api
+      context: ./StoreApi/src
     ports:
       - "8080:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_HTTP_PORTS: 8080
-      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Pooling=true;Minimum Pool Size=0;Maximum Pool Size=20"
+      ConnectionStrings__Postgres: "Host=host.docker.internal;Port=5432;Database=storeapi;Username=postgres;Password=${PG_PASSWORD}"
       ConnectionStrings__Mongo: "mongodb://mongo:27017"
-      Mongo__Database: "${MONGO_DB}"
+      Mongo__DatabaseName: storeapi
+      RabbitMq__Host: rabbitmq          # usado quando o publicador existir
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
-      postgres:
-        condition: service_healthy
       mongo:
+        condition: service_started
+      rabbitmq:
         condition: service_healthy
-    restart: unless-stopped
-    init: true
-    mem_limit: 384m
-    cpus: 1.0
-    networks:
-      - backend
 
-  postgres:
-    image: postgres:16-alpine
-    container_name: meu-postgres
+  purchases-api:
+    build:
+      context: ./purchases-api
+    ports:
+      - "8081:8081"
     environment:
-      POSTGRES_DB: "${POSTGRES_DB}"
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    restart: unless-stopped
-    mem_limit: 256m
-    cpus: 0.75
-    networks:
-      - backend
-
-  mongo:
-    image: mongo:8
-    container_name: meu-mongo
-    command: ["mongod", "--wiredTigerCacheSizeGB", "0.25"]
-    volumes:
-      - mongo_data:/data/db
-    healthcheck:
-      test:
-        - CMD
-        - mongosh
-        - --quiet
-        - --eval
-        - "db.adminCommand('ping').ok"
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    restart: unless-stopped
-    mem_limit: 384m
-    cpus: 0.75
-    networks:
-      - backend
+      PORT: "8081"
+      DATABASE_URL: "postgres://postgres:${PG_PASSWORD}@host.docker.internal:5432/purchases"
+      RABBITMQ_URL: "amqp://${RABBIT_USER:-store}:${RABBIT_PASSWORD}@rabbitmq:5672/"   # usado pelo consumidor
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
-  postgres_data:
-  mongo_data:
-
-networks:
-  backend:
-    driver: bridge
+  mongodata:
