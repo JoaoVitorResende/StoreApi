@@ -15,6 +15,15 @@ namespace StoreApi.Infrastructure.DataAccess.mongo
 
         public IMongoCollection<Item> Items => _database.GetCollection<Item>("items");
 
+        public async Task EnsureIndexesAsync()
+        {
+            var keys = Builders<Item>.IndexKeys
+                .Ascending(i => i.StoreId)
+                .Ascending(i => i.CategoryId);
+
+            await Items.Indexes.CreateOneAsync(new CreateIndexModel<Item>(keys));
+        }
+
         // Sem índice, filtrar por StoreId/CategoryId varre a coleção inteira
         private void CreateIndexes()
         {

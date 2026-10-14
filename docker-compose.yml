@@ -1,56 +1,72 @@
-# docker-compose.yml
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: storeapi
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   rabbitmq:
     image: rabbitmq:3-management
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBIT_USER:-store}
-      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD:?defina RABBIT_PASSWORD no .env}
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD}
     ports:
       - "5672:5672"
-      - "15672:15672"   # painel: http://localhost:15672
+      - "15672:15672"
+    volumes:
+      - rabbitdata:/var/lib/rabbitmq
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  mongo:
-    image: mongo:7
-    volumes:
-      - mongodata:/data/db
-
   storeapi:
     build:
-      context: ./StoreApi/src
+      context: StoreApi/src
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
-      ConnectionStrings__Postgres: "Host=host.docker.internal;Port=5432;Database=storeapi;Username=postgres;Password=${PG_PASSWORD}"
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=storeapi;Username=${PG_USER:-postgres};Password=${PG_PASSWORD}"
       ConnectionStrings__Mongo: "mongodb://mongo:27017"
       Mongo__DatabaseName: storeapi
-      RabbitMq__Host: rabbitmq          # usado quando o publicador existir
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      RabbitMq__Host: rabbitmq
+      RabbitMq__User: ${RABBIT_USER}
+      RabbitMq__Password: ${RABBIT_PASSWORD}
     depends_on:
+      postgres:
+        condition: service_healthy
       mongo:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
-
-  purchases-api:
-    build:
-      context: ./purchases-api
-    ports:
-      - "8081:8081"
-    environment:
-      PORT: "8081"
-      DATABASE_URL: "postgres://postgres:${PG_PASSWORD}@host.docker.internal:5432/purchases"
-      RABBITMQ_URL: "amqp://${RABBIT_USER:-store}:${RABBIT_PASSWORD}@rabbitmq:5672/"   # usado pelo consumidor
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
+  pgdata:
   mongodata:
+  rabbitdata:

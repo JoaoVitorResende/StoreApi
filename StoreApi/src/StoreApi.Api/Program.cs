@@ -1,6 +1,7 @@
 using StoreApi.Api.Filters;
 using StoreApi.Application;
 using StoreApi.Infrastructure;
+using StoreApi.Infrastructure.Migrations;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +16,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers(options => options.Filters.Add<ExceptionFilter>());
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -27,5 +29,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+await DataBaseMigration.MigrateDataBase(app.Services);
 
 app.Run();
