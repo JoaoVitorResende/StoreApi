@@ -68,7 +68,7 @@ services:
 
   purchases-api:
     build:
-      context: ../purchases-api
+      context: ../Purchase-api
     ports:
       - "8081:8081"
     environment:
