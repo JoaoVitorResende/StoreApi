@@ -9,5 +9,7 @@
         public decimal Price { get; set; }
         public long CategoryId { get; set; }
         public long StoreId { get; set; }
+        public List<string> ProcessedPurchases { get; set; } = new();
+
     }
 }

@@ -5,8 +5,10 @@ using MongoDB.Driver;
 using StoreApi.Domain.Repositories;
 using StoreApi.Domain.Repositories.Categories;
 using StoreApi.Domain.Repositories.Items;
+using StoreApi.Domain.Repositories.Stocks;
 using StoreApi.Domain.Repositories.Stores;
 using StoreApi.Infrastructure.DataAccess.mongo;
+using StoreApi.Infrastructure.DataAccess.mongo.Repositories;
 using StoreApi.Infrastructure.DataAccess.Mongo.Repositories;
 using StoreApi.Infrastructure.DataAccess.Postgres;
 using StoreApi.Infrastructure.DataAccess.Postgres.Repositories;
@@ -27,6 +29,7 @@ namespace StoreApi.Infrastructure
             services.AddScoped<IStoreReadOnlyRepository, StoreRepository>();
             services.AddScoped<IStoreWriteOnlyRepository, StoreRepository>();
             services.AddScoped<ICategoryReadOnlyRepository, CategoryRepository>();
+            services.AddScoped<IItemStockRepository, ItemStockRepository>();
             services.AddScoped<ICategoryWriteOnlyRepository, CategoryRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
