@@ -68,13 +68,17 @@ services:
 
   purchases-api:
     build:
-      context: ../Purchase-api
+      context: ../Purchase-api/PurchaseApi/src
+      dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "8081:8080"
+    env_file:
+      - ../Purchase-api/.env   # ajuste para onde está o .env da Purchase
     environment:
-      PORT: "8081"
-      DATABASE_URL: "postgres://postgres:${PG_PASSWORD}@host.docker.internal:5432/purchases"
-      RABBITMQ_URL: "amqp://${RABBIT_USER}:${RABBIT_PASSWORD}@rabbitmq:5672/"   # usado pelo consumidor
+      ASPNETCORE_ENVIRONMENT: Development
+      RabbitMq__Host: rabbitmq
+      RabbitMq__User: ${RABBIT_USER}
+      RabbitMq__Password: ${RABBIT_PASSWORD}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
