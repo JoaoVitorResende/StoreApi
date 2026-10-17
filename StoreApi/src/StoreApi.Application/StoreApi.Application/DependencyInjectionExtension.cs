@@ -5,6 +5,8 @@ using StoreApi.Application.UseCases.Category.Register;
 using StoreApi.Application.UseCases.Itens.GetAll;
 using StoreApi.Application.UseCases.Itens.GetByID;
 using StoreApi.Application.UseCases.Itens.Register;
+using StoreApi.Application.UseCases.Purchases;
+using StoreApi.Application.UseCases.Purchases.StoreApi.Application.UseCases.Purchases.ProcessCreated;
 using StoreApi.Application.UseCases.Store.GetAll;
 using StoreApi.Application.UseCases.Store.GetByName;
 using StoreApi.Application.UseCases.Store.Register;
@@ -32,6 +34,7 @@ namespace StoreApi.Application
             services.AddScoped<IGetCategories, GetCategories>();
             services.AddScoped<IGetStoreByName, GetStoreByName>();
             services.AddScoped<IGetStoreAll, GetStoreAll>();
+            services.AddScoped<IProcessPurchaseCreatedUseCase, ProcessPurchaseCreatedUseCase>();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using MassTransit;
-using MassTransit.RabbitMqTransport.Configuration;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -12,7 +10,6 @@ using StoreApi.Infrastructure.DataAccess.mongo;
 using StoreApi.Infrastructure.DataAccess.Mongo.Repositories;
 using StoreApi.Infrastructure.DataAccess.Postgres;
 using StoreApi.Infrastructure.DataAccess.Postgres.Repositories;
-using StoreApi.Infrastructure.Messaging;
 
 namespace StoreApi.Infrastructure
 {
@@ -22,31 +19,6 @@ namespace StoreApi.Infrastructure
         {
             AddDbContext(services, configuration);
             AddRepositories(services);
-            RabbitMqBusConfiguration(services, configuration);
-        }
-        private static void RabbitMqBusConfiguration(IServiceCollection services, IConfiguration configuration)
-        {
-            var host = configuration["RabbitMq:Host"];
-            if (string.IsNullOrWhiteSpace(host))
-                throw new InvalidOperationException("RabbitMq:Host não configurado.");
-
-            var user = configuration["RabbitMq:User"] ?? "guest";
-            var pass = configuration["RabbitMq:Password"] ?? "guest";
-
-            services.AddMassTransit(x =>
-            {
-                x.AddConsumer<PurchaseCreatedConsumer>();
-
-                x.UsingRabbitMq((context, cfg) =>
-                {
-                    cfg.Host(host, "/", h =>
-                    {
-                        h.Username(user);
-                        h.Password(pass);
-                    });
-                    cfg.ConfigureEndpoints(context);
-                });
-            });
         }
         private static void AddRepositories(IServiceCollection services)
         {
