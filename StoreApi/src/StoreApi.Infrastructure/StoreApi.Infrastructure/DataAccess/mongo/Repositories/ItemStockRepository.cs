@@ -32,12 +32,16 @@ namespace StoreApi.Infrastructure.DataAccess.mongo.Repositories
                 .Push(i => i.ProcessedPurchases, purchaseKey);
 
             var result = await _items.UpdateOneAsync(filter, update, cancellationToken: ct);
+
             if (result.ModifiedCount == 1)
                 return StockResult.Decreased;
 
             var item = await _items.Find(Builders<Item>.Filter.Eq("_id", objectId)).FirstOrDefaultAsync(ct);
+
             if (item is null) return StockResult.ItemNotFound;
+
             if (item.ProcessedPurchases?.Contains(purchaseKey) == true) return StockResult.AlreadyProcessed;
+
             return StockResult.InsufficientStock;
         }
     }

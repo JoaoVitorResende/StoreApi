@@ -19,14 +19,14 @@ namespace StoreApi.Application.UseCases.Purchases
             _logger = logger;
         }
 
-        public async Task Execute(PurchaseCreatedEvent evt)
+        public async Task<StockProcessedEvent> Execute(PurchaseCreatedEvent evt)
         {
             ArgumentNullException.ThrowIfNull(evt);
 
             if (string.IsNullOrWhiteSpace(evt.ItemId) || evt.Quantity <= 0)
             {
                 _logger.LogWarning("Compra {Id} com item ou quantidade inválidos.", evt.PurchaseId);
-                return;
+                return new StockProcessedEvent(evt.PurchaseId, false, "Item ou quantidade inválidos.");
             }
 
             var result = await _stockRepository.DecreaseStockAsync(evt.ItemId, evt.Quantity, evt.PurchaseId);
@@ -35,16 +35,23 @@ namespace StoreApi.Application.UseCases.Purchases
             {
                 case StockResult.Decreased:
                     _logger.LogInformation("Estoque baixado para a compra {Id}.", evt.PurchaseId);
-                    break;
+                    return new StockProcessedEvent(evt.PurchaseId, true, null);
+
                 case StockResult.AlreadyProcessed:
                     _logger.LogInformation("Compra {Id} já havia sido processada.", evt.PurchaseId);
-                    break;
+                    return new StockProcessedEvent(evt.PurchaseId, true, null);
+
                 case StockResult.InsufficientStock:
                     _logger.LogWarning("Estoque insuficiente para a compra {Id}.", evt.PurchaseId);
-                    break;
+                    return new StockProcessedEvent(evt.PurchaseId, false, "Estoque insuficiente.");
+
                 case StockResult.ItemNotFound:
                     _logger.LogWarning("Item da compra {Id} não encontrado.", evt.PurchaseId);
-                    break;
+                    return new StockProcessedEvent(evt.PurchaseId, false, "Item não encontrado.");
+
+                default:
+                    _logger.LogError("Resultado inesperado {Result} na compra {Id}.", result, evt.PurchaseId);
+                    return new StockProcessedEvent(evt.PurchaseId, false, "Erro ao processar o estoque.");
             }
         }
     }

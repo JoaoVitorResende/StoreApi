@@ -29,7 +29,9 @@ namespace StoreApi.Api.Messaging
 
             _logger.LogInformation("Compra {Id} recebida, total {Total}", evt.PurchaseId, evt.Total);
 
-            await _useCase.Execute(evt);
+            var response = await _useCase.Execute(evt);
+
+            await context.Publish(response);
         }
     }
 }

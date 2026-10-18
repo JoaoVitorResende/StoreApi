@@ -6,7 +6,7 @@ namespace StoreApi.Application.UseCases.Purchases
     {
         public interface IProcessPurchaseCreatedUseCase
         {
-            Task Execute(PurchaseCreatedEvent evt);
+            Task<StockProcessedEvent> Execute(PurchaseCreatedEvent evt);
         }
     }
 }
