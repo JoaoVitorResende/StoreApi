@@ -66,26 +66,12 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  purchases-api:
-    build:
-      context: ../Purchase-api/PurchaseApi/src
-      dockerfile: Dockerfile
-    ports:
-      - "8081:8080"
-    env_file:
-      - ../Purchase-api/.env   # ajuste para onde está o .env da Purchase
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      RabbitMq__Host: rabbitmq
-      RabbitMq__User: ${RABBIT_USER}
-      RabbitMq__Password: ${RABBIT_PASSWORD}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-
 volumes:
   pgdata:
   mongodata:
   rabbitdata:
+
+networks:
+  default:
+    name: shared-net
+    external: true
