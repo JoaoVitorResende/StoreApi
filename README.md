@@ -5,15 +5,54 @@
 
 # StoreApi
 
-ASP.NET Core store API built with DDD. It manages stores, categories and items, and takes part in the purchase flow: when the PurchaseApi announces a new purchase, the StoreApi deducts the stock and replies with the result.
+ASP.NET Core store API built with DDD. It manages stores, categories and items, and takes part in the purchase flow: when the PurchaseApi announces a new purchase, the StoreApi deducts the stock and replies with the result. The item catalog is exposed to the web front end (read only) through the StoreApiGateway.
 
 ## Features
 
-- Store registration
-- Category registration
-- Item catalog, stored in MongoDB
+- Store registration and lookup
+- Category registration and listing
+- Item catalog, stored in MongoDB, with paginated listing
 - Idempotent stock deduction triggered by purchase events
 - Asynchronous integration with the PurchaseApi through RabbitMQ (MassTransit)
+
+## Endpoints
+
+| Method | Route | Description |
+| --- | --- | --- |
+| POST | /api/store | Registers a store |
+| GET | /api/store | Lists stores |
+| GET | /api/store/{storeName} | Finds a store by name |
+| POST | /api/category | Registers a category |
+| GET | /api/category | Lists categories |
+| POST | /api/item | Registers an item |
+| GET | /api/item?page=1&pageSize=10 | Lists items, paginated (at most 50 per page) |
+| GET | /api/item/{id} | Finds an item by id; 404 if it does not exist |
+
+Item list response:
+
+```json
+{
+  "itens": [
+    {
+      "id": "6ad4def84c3f10514043a630",
+      "title": "teste2",
+      "description": "teste2",
+      "quantity": 1,
+      "price": 1,
+      "categoryId": 1,
+      "storeId": 1
+    }
+  ],
+  "page": 1,
+  "pageSize": 10,
+  "totalItens": 3,
+  "totalPages": 1
+}
+```
+
+`quantity` is the current stock of the item.
+
+Through the StoreApiGateway, only `GET /api/items` (rewritten to `/api/item`) is public. Registrations (`POST`) are done directly on the StoreApi, which keeps the write operations away from the web front end.
 
 ## Purchase flow
 
@@ -33,10 +72,12 @@ Messages can be delivered more than once, so the deduction must not be applied t
 
 ```mermaid
 flowchart LR
-    Client([Client]) -->|creates purchase| PA[PurchaseApi]
+    Web([purchase-web]) --> GW[StoreApiGateway]
+    GW -->|/api/purchases| PA[PurchaseApi]
+    GW -->|GET /api/items| SA[StoreApi]
     PA --> PDB[("PostgreSQL<br/>purchases")]
     PA -->|PurchaseCreatedEvent| MQ{{RabbitMQ}}
-    MQ --> SA[StoreApi]
+    MQ --> SA
     SA --> MDB[("MongoDB<br/>items and stock")]
     SA --> SDB[("PostgreSQL<br/>stores and categories")]
     SA -->|StockProcessedEvent| MQ
@@ -68,14 +109,14 @@ Design decisions:
 
 - Aggregates reference each other by id only (an `Item` holds a `StoreId` and a `CategoryId`, with no navigation properties).
 - `Category` is an entity referenced by `CategoryId`, not an enum.
-- `StoreId` is sent in the request and is not returned in the response.
 - Names of stores and categories are normalized before being saved.
+- Items live in MongoDB (read-heavy catalog and atomic stock updates), while stores and categories live in PostgreSQL.
 
 ## Running
 
 Prerequisites: Docker and Docker Compose.
 
-The StoreApi compose brings up the API, PostgreSQL, MongoDB and RabbitMQ. It shares the `shared-net` network with the PurchaseApi compose, so both APIs reach the same RabbitMQ.
+The StoreApi compose brings up the API, PostgreSQL, MongoDB and RabbitMQ. It shares the `shared-net` network with the PurchaseApi and StoreApiGateway composes, so the three projects reach each other by service name (the gateway calls this API at `http://storeapi:8080/`) and both APIs use the same RabbitMQ.
 
 | Service | Port |
 | --- | --- |
@@ -84,8 +125,18 @@ The StoreApi compose brings up the API, PostgreSQL, MongoDB and RabbitMQ. It sha
 | MongoDB | 27017 |
 | RabbitMQ | 5672 (management UI on 15672) |
 
+The environment variables (`PG_USER`, `PG_PASSWORD`, `RABBIT_USER`, `RABBIT_PASSWORD`) live in a `.env` file next to the compose file. Docker Compose reads it to fill the `${...}` placeholders. A `.env.example` lists the variable names without values.
+
 The API image is built from a Dockerfile based on .NET 8 Alpine.
+
+## Known limitations
+
+- The StoreApi does not yet validate the purchase total against `price * quantity`. The total sent by the client is accepted as it is. The fix belongs here, when the `PurchaseCreatedEvent` is processed.
+- The item list is limited to 50 items per page.
+- There is no authentication.
 
 ## Related projects
 
 - PurchaseApi: creates purchases, consumes the stock result and notifies status changes.
+- StoreApiGateway: single entry point for clients; exposes the purchase routes and the item list (read only).
+- purchase-web: Next.js front end for creating and following purchases.
