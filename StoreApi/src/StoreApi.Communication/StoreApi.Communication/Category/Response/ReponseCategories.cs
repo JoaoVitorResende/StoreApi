@@ -2,6 +2,6 @@
 {
     public class ReponseCategories
     {
-        public List<string> categories { get; set; } = [];
+        public List<ResponseRegisterCategoryJson> categories { get; set; } = [];
     }
 }

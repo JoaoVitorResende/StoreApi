@@ -19,7 +19,7 @@ namespace StoreApi.Application.UseCases.Category.Get
 
             return new ReponseCategories
             {
-                categories = result.Select(c => c.Name).ToList()
+                categories = _mapper.Map<List<ResponseRegisterCategoryJson>>(result)
             };
         }
     }
